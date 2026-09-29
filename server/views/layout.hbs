@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="icon" sizes="196x196" href="/images/favicon-196x196.png" />
+  <link rel="icon" sizes="32x32" href="/images/favicon-32x32.png" />
+  <link rel="icon" sizes="16x16" href="/images/favicon-16x16.png" />
+  <link rel="apple-touch-icon" href="/images/favicon-196x196.png" />
+  <link rel="mask-icon" href="/images/icon.svg" color="blue" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#f3f3f3" />
+  <meta property="fb:app_id" content="123456789" />
+  <meta name="htmx-config" content='{"withCredentials":true}'>
+  <meta property="og:url" content="{{site_url}}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="{{site_name}}" />
+  <meta property="og:image" content="{{site_url}}/images/card.png" />
+  <meta property="og:description" content="Short links. Live insights." />
+  <meta name="twitter:url" content="{{site_url}}" />
+  <meta name="twitter:title" content="{{site_name}}" />
+  <meta name="twitter:description" content="Short links. Live insights." />
+  <meta name="twitter:image" content="{{site_url}}/images/card.png" />
+  <meta name="description" content="{{site_name}} is a URL shortener with live link analytics." />
+  <title>{{site_name}} | {{title}}</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  {{#each custom_styles}}
+    <link rel="stylesheet" href="/css/{{this}}">
+  {{/each}}
+  {{{block "stylesheets"}}}
+</head>
+<body>
+  <div class="main-wrapper">
+    {{{body}}}
+  </div>
+
+  {{{block "scripts"}}}
+  <script src="/libs/htmx.min.js"></script>
+  <script src="/libs/qrcode.min.js"></script>
+  <script src="/scripts/main.js"></script>
+</body>
+</html>

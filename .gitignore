@@ -1,0 +1,12 @@
+.env
+.vscode/
+logs
+*.log
+node_modules/
+production-server
+.idea/
+dump.rdb
+docs/api/static
+**/.DS_Store
+db/*
+!db/.gitkeep

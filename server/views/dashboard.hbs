@@ -1,0 +1,325 @@
+{{#extend "stylesheets"}}
+  <link rel="stylesheet" href="/css/dashboard.css">
+{{/extend}}
+
+<div class="lp-app" id="lp-app">
+
+  <aside class="lp-sidebar" id="lp-sidebar">
+    <div class="lp-sidebar__brand">
+      <a href="/" class="lp-brand" title="LinkPulse">
+        <span class="lp-brand__mark">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12h4l2-7 4 14 2-7h6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="lp-brand__text">
+          <span class="lp-brand__name">{{site_name}}</span>
+          <span class="lp-brand__tagline">Short links. Live insights.</span>
+        </span>
+      </a>
+      <button type="button" class="lp-sidebar__close" id="lp-sidebar-close" aria-label="Close menu">{{> icons/x}}</button>
+    </div>
+
+    <nav class="lp-nav">
+      <button type="button" class="lp-nav__item active" data-tab="overview">
+        <span class="lp-nav__icon">{{> icons/zap}}</span> Overview
+      </button>
+      <button type="button" class="lp-nav__item" data-tab="links">
+        <span class="lp-nav__icon">{{> icons/chevron_right}}</span> My Links
+      </button>
+      <button type="button" class="lp-nav__item" data-tab="analytics">
+        <span class="lp-nav__icon">{{> icons/chart}}</span> Analytics
+      </button>
+      <button type="button" class="lp-nav__item" data-tab="create">
+        <span class="lp-nav__icon">{{> icons/plus}}</span> Create Link
+      </button>
+      <a class="lp-nav__item" href="/settings">
+        <span class="lp-nav__icon">{{> icons/cog}}</span> Settings
+      </a>
+      {{#if isAdmin}}
+        <a class="lp-nav__item" href="/admin">
+          <span class="lp-nav__icon">{{> icons/shield}}</span> Admin
+        </a>
+      {{/if}}
+    </nav>
+
+    <div class="lp-sidebar__footer">
+      <a href="/logout" class="lp-nav__item lp-nav__item--muted">
+        Log out
+      </a>
+      <p class="lp-attribution">Built on the open-source <a href="https://github.com/thedevs-network/kutt" target="_blank" rel="noopener noreferrer">Kutt</a> project (MIT).</p>
+    </div>
+  </aside>
+
+  <div class="lp-backdrop" id="lp-backdrop"></div>
+
+  <div class="lp-main">
+    <header class="lp-topbar">
+      <button type="button" class="lp-icon-btn lp-sidebar__open" id="lp-sidebar-open" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+
+      <div class="lp-topbar__title">
+        <h1 id="lp-page-title">Overview</h1>
+        <p id="lp-page-subtitle" class="lp-muted">A live look at your links and their performance.</p>
+      </div>
+
+      <div class="lp-topbar__actions">
+        <div class="lp-search" id="lp-topbar-search">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.3-4.3M19 10.5a8.5 8.5 0 1 1-17 0 8.5 8.5 0 0 1 17 0Z" stroke="currentColor" stroke-width="2"/></svg>
+          <input type="text" id="lp-search-input" placeholder="Search your links…" autocomplete="off">
+        </div>
+
+        <div class="lp-live" id="lp-live-indicator" title="Live analytics connection">
+          <span class="lp-live__dot"></span>
+          <span class="lp-live__label">Live</span>
+        </div>
+
+        <button type="button" class="lp-icon-btn" id="lp-refresh-btn" title="Refresh now">
+          {{> icons/reload}}
+        </button>
+
+        <div class="lp-user">
+          <span class="lp-user__avatar">{{initial user.email}}</span>
+          <span class="lp-user__email">{{user.email}}</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="lp-content">
+
+      <!-- ============ OVERVIEW ============ -->
+      <section class="lp-panel active" id="panel-overview">
+        <div class="lp-cards" id="overview-cards">
+          <div class="lp-card lp-card--stat" data-stat="totalLinks">
+            <div class="lp-card__icon lp-card__icon--indigo">{{> icons/chevron_right}}</div>
+            <div class="lp-card__body">
+              <span class="lp-card__label">Total Links</span>
+              <span class="lp-card__value" data-value>—</span>
+            </div>
+          </div>
+          <div class="lp-card lp-card--stat" data-stat="totalClicks">
+            <div class="lp-card__icon lp-card__icon--violet">{{> icons/zap}}</div>
+            <div class="lp-card__body">
+              <span class="lp-card__label">Total Clicks</span>
+              <span class="lp-card__value" data-value>—</span>
+            </div>
+          </div>
+          <div class="lp-card lp-card--stat" data-stat="activeLinks">
+            <div class="lp-card__icon lp-card__icon--teal">{{> icons/check}}</div>
+            <div class="lp-card__body">
+              <span class="lp-card__label">Active Links</span>
+              <span class="lp-card__value" data-value>—</span>
+            </div>
+          </div>
+          <div class="lp-card lp-card--stat" data-stat="clicksToday">
+            <div class="lp-card__icon lp-card__icon--amber">{{> icons/chart}}</div>
+            <div class="lp-card__body">
+              <span class="lp-card__label">Clicks Today</span>
+              <span class="lp-card__value" data-value>—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lp-grid-2">
+          <div class="lp-panel-box">
+            <div class="lp-panel-box__head">
+              <h2>Click activity</h2>
+              <span class="lp-muted">Last 7 days</span>
+            </div>
+            <div class="lp-chart-wrap">
+              <canvas id="overview-chart" height="220"></canvas>
+              <div class="lp-empty" id="overview-chart-empty" hidden>
+                No clicks recorded yet. Share a short link to see activity here.
+              </div>
+            </div>
+          </div>
+
+          <div class="lp-panel-box">
+            <div class="lp-panel-box__head">
+              <h2>Recent activity</h2>
+              <span class="lp-badge lp-badge--live">Live</span>
+            </div>
+            <ul class="lp-activity-feed" id="activity-feed">
+              <li class="lp-empty">Waiting for the first click…</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="lp-grid-2">
+          <div class="lp-panel-box">
+            <div class="lp-panel-box__head">
+              <h2>Recent links</h2>
+              <button type="button" class="lp-link-btn" data-tab="links">View all</button>
+            </div>
+            <div class="lp-mini-list" id="recent-links-list">
+              <div class="lp-empty">No links yet.</div>
+            </div>
+          </div>
+
+          <div class="lp-panel-box">
+            <div class="lp-panel-box__head">
+              <h2>Top performing links</h2>
+              <button type="button" class="lp-link-btn" data-tab="links">View all</button>
+            </div>
+            <div class="lp-mini-list" id="top-links-list">
+              <div class="lp-empty">No clicks yet.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ MY LINKS ============ -->
+      <section class="lp-panel" id="panel-links">
+        <div class="lp-panel-box">
+          <div class="lp-panel-box__head">
+            <h2>My Links</h2>
+            <button type="button" class="lp-btn lp-btn--primary" data-tab="create">
+              {{> icons/plus}} New link
+            </button>
+          </div>
+          <div class="lp-table-scroll">
+            <table class="lp-table" id="links-table">
+              <thead>
+                <tr>
+                  <th>Short link</th>
+                  <th>Original URL</th>
+                  <th>Clicks</th>
+                  <th>Created</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="links-table-body">
+                <tr><td colspan="6" class="lp-empty">Loading your links…</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="lp-pagination" id="links-pagination"></div>
+        </div>
+      </section>
+
+      <!-- ============ ANALYTICS ============ -->
+      <section class="lp-panel" id="panel-analytics">
+        <div class="lp-panel-box">
+          <div class="lp-panel-box__head">
+            <h2>Analytics</h2>
+            <select id="analytics-link-select" class="lp-select">
+              <option value="">Select a link…</option>
+            </select>
+          </div>
+
+          <div id="analytics-empty" class="lp-empty lp-empty--big">
+            Pick a link above to see its detailed analytics.
+          </div>
+
+          <div id="analytics-content" hidden>
+            <div class="lp-cards lp-cards--compact">
+              <div class="lp-card lp-card--stat">
+                <div class="lp-card__body">
+                  <span class="lp-card__label">Total clicks</span>
+                  <span class="lp-card__value" id="al-total">—</span>
+                </div>
+              </div>
+              <div class="lp-card lp-card--stat">
+                <div class="lp-card__body">
+                  <span class="lp-card__label">Clicks today</span>
+                  <span class="lp-card__value" id="al-today">—</span>
+                </div>
+              </div>
+              <div class="lp-card lp-card--stat">
+                <div class="lp-card__body">
+                  <span class="lp-card__label">Unique referrers</span>
+                  <span class="lp-card__value" id="al-referrers">—</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="lp-grid-2">
+              <div class="lp-panel-box">
+                <div class="lp-panel-box__head"><h2>Clicks over time</h2></div>
+                <canvas id="analytics-timeline-chart" height="200"></canvas>
+              </div>
+              <div class="lp-panel-box">
+                <div class="lp-panel-box__head"><h2>Devices</h2></div>
+                <canvas id="analytics-device-chart" height="200"></canvas>
+              </div>
+            </div>
+
+            <div class="lp-grid-3">
+              <div class="lp-panel-box">
+                <div class="lp-panel-box__head"><h2>Browser</h2></div>
+                <div class="lp-bars" id="al-browser"></div>
+              </div>
+              <div class="lp-panel-box">
+                <div class="lp-panel-box__head"><h2>Operating system</h2></div>
+                <div class="lp-bars" id="al-os"></div>
+              </div>
+              <div class="lp-panel-box">
+                <div class="lp-panel-box__head"><h2>Referrer</h2></div>
+                <div class="lp-bars" id="al-referrer"></div>
+              </div>
+              <div class="lp-panel-box">
+                <div class="lp-panel-box__head"><h2>Country</h2></div>
+                <div class="lp-bars" id="al-country"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ CREATE LINK ============ -->
+      <section class="lp-panel" id="panel-create">
+        <div class="lp-panel-box lp-panel-box--narrow">
+          <div class="lp-panel-box__head">
+            <h2>Create a short link</h2>
+          </div>
+
+          <form id="create-link-form" class="lp-form">
+            <label class="lp-field">
+              <span>Original URL</span>
+              <input type="text" name="target" id="cl-target" placeholder="https://example.com/your/long/link" required>
+            </label>
+
+            <label class="lp-field">
+              <span>Custom alias <em>(optional)</em></span>
+              <input type="text" name="customurl" id="cl-customurl" placeholder="my-alias">
+            </label>
+
+            <label class="lp-field">
+              <span>Expiration <em>(optional)</em></span>
+              <select name="expire_in" id="cl-expire">
+                <option value="">Never</option>
+                <option value="1h">1 hour</option>
+                <option value="1d">1 day</option>
+                <option value="7d">7 days</option>
+                <option value="30d">30 days</option>
+              </select>
+            </label>
+
+            <button type="submit" class="lp-btn lp-btn--primary lp-btn--block" id="cl-submit">
+              {{> icons/plus}} Create Short Link
+            </button>
+          </form>
+
+          <div class="lp-result" id="create-link-result" hidden>
+            <span class="lp-result__label">Your short link</span>
+            <div class="lp-result__row">
+              <input type="text" id="create-link-output" readonly>
+              <button type="button" class="lp-btn lp-btn--ghost" id="create-link-copy">Copy</button>
+              <a class="lp-btn lp-btn--ghost" id="create-link-open" target="_blank" rel="noopener noreferrer">Open</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<div class="lp-toasts" id="lp-toasts"></div>
+
+{{#extend "scripts"}}
+  <script src="/libs/chart.min.js"></script>
+  <script src="/scripts/dashboard.js"></script>
+{{/extend}}

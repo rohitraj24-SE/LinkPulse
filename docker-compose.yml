@@ -1,0 +1,15 @@
+services:
+  server:
+    build:
+      context: .
+    volumes:
+       - db_data_sqlite:/var/lib/LinkPulse
+       - custom:/LinkPulse/custom
+    env_file: .env
+    environment:
+      DB_FILENAME: "/var/lib/LinkPulse/data.sqlite"
+    ports:
+      - 3000:3000
+volumes:
+  db_data_sqlite:
+  custom:
